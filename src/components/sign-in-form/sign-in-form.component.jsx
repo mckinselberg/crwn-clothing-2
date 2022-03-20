@@ -1,12 +1,8 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import {
   signInWithGooglePopup,
-  createUserDocumentFromAuth,
   signInAuthUserWithEmailAndPassword,
-  getUserFromDb,
 } from "../../utils/firebase/firebase.utils";
-
-import { UserContext } from "../../contexts/user.context";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -22,15 +18,12 @@ const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
-  const { setCurrentUser } = useContext(UserContext);
-
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
 
-  const SignInGoogleUser = async () => {
-    const { user } = await signInWithGooglePopup();
-    // const userDocRef = await createUserDocumentFromAuth(user);
+  const signInWithGoogle = async () => {
+    await signInWithGooglePopup();
   };
 
   const handleChange = (event) => {
@@ -41,17 +34,8 @@ const SignInForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-      setCurrentUser(user);
+      await signInAuthUserWithEmailAndPassword(email, password);
       resetFormFields();
-
-      // getUserFromDb(userAuth)
-      //   .then(userSnapshot => {
-      //     console.log(userSnapshot.data())
-      //   });
     } catch (error) {
       switch (error.code) {
         case "auth/wrong-password":
@@ -90,7 +74,7 @@ const SignInForm = () => {
         />
         <div className="buttons-container">
           <Button type="submit">Sign In</Button>
-          <Button type="button" buttonType="google" onClick={SignInGoogleUser}>
+          <Button type="button" buttonType="google" onClick={signInWithGoogle}>
             Sign In with Google
           </Button>
         </div>
