@@ -70,13 +70,9 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
   return await createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const signInUserWithEmailAndPassword = async (email, password) => {
-  try {
-    const userAuth =  await signInWithEmailAndPassword(auth, email, password);
-    return userAuth;
-  } catch (error) {
-    console.error('There was an error in signInUserwithEmailAndPassword', error);
-  }
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  const userAuth =  await signInWithEmailAndPassword(auth, email, password);
+  return userAuth;
 }
 
 export const getUserFromDb = async ({ user }) => {
