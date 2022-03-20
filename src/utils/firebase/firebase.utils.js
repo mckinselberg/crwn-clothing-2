@@ -5,7 +5,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
@@ -63,7 +64,7 @@ export const createUserDocumentFromAuth = async (
   }
 
   return userDocRef;
-};
+}; 
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
@@ -84,3 +85,5 @@ export const getUserFromDb = async ({ user }) => {
     console.error('There was an error in getUserFromDb', error);
   }
 }
+
+export const signOutUser = async () => signOut(auth);
