@@ -1,6 +1,8 @@
 body {
-  font-family: 'Open Sans Condensed';
+  font-family: "Open Sans Condensed";
   padding: 20px;
+  margin: 0;
+  padding: 20px 40px;
 }
 
 a {
@@ -13,5 +15,5 @@ a {
 }
 
 .App {
-  position: relative
+  position: relative;
 }
