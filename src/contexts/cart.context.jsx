@@ -1,23 +1,6 @@
 import { createContext, useState, useEffect, useReducer } from "react";
 
 const addCartItem = (cartItems, productToAdd) => {
-  // // find if cartItems contains productToAdd
-  // let found = false;
-  // let updatedCartItems = cartItems.slice();
-  // updatedCartItems = cartItems.map((item) => {
-  //   // if found, increment quantity
-  //   if (item.id === productToAdd.id) {
-  //     found = true;
-  //     item.quantity += 1;
-  //   }
-  //   return item;
-  // });
-  // if (!found) {
-  //   productToAdd.quantity = 1;
-  //   updatedCartItems.push(productToAdd);
-  // }
-  // return updatedCartItems;
-  // // return new arry with modifiend cartItems / new cart item
 
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === productToAdd.id
@@ -99,7 +82,7 @@ export const CartProvider = ({ children }) => {
   // }
   
 
-  const updateItem = (itemId, cartItems, action) => {
+  const updateItem = (itemId, action) => {
     let updatedCartItems = cartItems.slice();
     updatedCartItems.forEach((item, idx) => {
       if (item.id === itemId) {
