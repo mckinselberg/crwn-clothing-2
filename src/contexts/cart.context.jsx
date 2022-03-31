@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useReducer } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const addCartItem = (cartItems, productToAdd) => {
 
@@ -56,30 +56,6 @@ export const CartProvider = ({ children }) => {
   const confirmDelete = () => {
     return window.confirm("Are you sure you want to delete this item?");
   };
-  
-  // const cartItemReducer = (state, action) => {
-  //   switch(action.type) {
-  //     case "increment":
-  //         item.quantity = item.quantity + 1;
-  //         break;
-  //       case "decrement":
-  //         if (item.quantity === 1) {
-  //           if (confirmDelete()) {
-  //             updatedCartItems.splice(idx, 1);
-  //           }
-  //         } else {
-  //           item.quantity = item.quantity - 1;
-  //         }
-  //         break;
-  //       case "delete":
-  //         if (confirmDelete()) {
-  //           updatedCartItems.splice(idx, 1);
-  //         }
-  //         break;
-  //       default:
-  //         return null;
-  //   }
-  // }
   
 
   const updateItem = (itemId, action) => {
