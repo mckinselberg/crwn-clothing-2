@@ -1,4 +1,4 @@
-import { Fragment, useContext } from "react";
+import { useContext } from "react";
 import { Outlet, Link } from "react-router-dom";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
@@ -17,7 +17,7 @@ const Navigation = () => {
   const { isCartOpen } = useContext(CartContext);
 
   return (
-    <Fragment>
+    <>
       <div className="navigation">
         <Link className="logo" to="/">
           <CrwnLogo className="logo" />
@@ -40,7 +40,7 @@ const Navigation = () => {
         {isCartOpen && <CartDropdown/>}
       </div>
       <Outlet />
-    </Fragment>
+    </>
   );
 };
 
