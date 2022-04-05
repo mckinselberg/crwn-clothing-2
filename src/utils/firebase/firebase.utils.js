@@ -34,7 +34,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-// console.log(firebaseApp);
+console.log(firebaseApp);
 
 // Provider
 const googleProvider = new GoogleAuthProvider();
@@ -59,7 +59,7 @@ export const addCollectionAndDocuments = async (
   const collectionRef = collection(db, collectionKey);
   const batch = writeBatch(db);
 
-  objectsToAdd.forEach((object, idx) => {
+  objectsToAdd.forEach(object => {
     const docRef = doc(collectionRef, object.title.toLowerCase());
     batch.set(docRef, object);
   });
