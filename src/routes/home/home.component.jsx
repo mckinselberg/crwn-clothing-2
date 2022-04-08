@@ -1,6 +1,5 @@
-import React from 'react';
 import Directory from '../../components/directory/directory.component';
-// import './home.styles.scss';
+import { Homepage as Home } from './home.styles'
 
 
 const categories = [
@@ -33,9 +32,9 @@ const categories = [
 
 
 const HomePage = () => (
-  <div className="homepage">
+  <Home>
     <Directory categories={categories}/>
-  </div>
+  </Home>
 );
 
 export default HomePage;
