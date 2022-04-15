@@ -1,6 +1,7 @@
 import { createContext, useState, useReducer } from "react";
 
 const INITIAL_STATE = {
+  // isCartOpen: false,
   cartItems: [],
   totalItems: 0,
   cartTotal: 0,
@@ -15,80 +16,39 @@ const CART_ACTION_TYPES = {
 
 const cartReducer = (state, action) => {
   const { type, payload } = action;
+
+  // const payload = {
+  //   cartItems,
+  //   cartCount,
+  //   cartTotal
+  // }
+
   switch (type) {
     case CART_ACTION_TYPES.ADD_ITEM: {
-      let existingItem = checkForExistingItem(state.cartItems, payload);
-      if (existingItem) {
-        let updatedCartItems = state.cartItems.map((cartItem) => {
-          if (cartItem.id === existingItem.id) {
-            cartItem.quantity = cartItem.quantity + 1;
-          }
-          return cartItem;
-        });
-        return {
-          ...state,
-          cartItems: updatedCartItems,
-          totalItems: state.totalItems + 1,
-          cartTotal: setCartTotal(updatedCartItems),
-        };
-      } else {
-        console.log("new item");
-        payload.quantity = 1;
-        return {
-          ...state,
-          cartItems: [...state.cartItems, payload],
-          totalItems: state.totalItems + 1,
-          cartTotal: setCartTotal([...state.cartItems, payload]),
-        };
-      }
+      return {
+        ...state,
+        ...payload,
+      };
     }
     case CART_ACTION_TYPES.INCREMENT_ITEM: {
       // INCREMENT ITEM
-      let updatedCartItems = state.cartItems.slice();
-      updatedCartItems.forEach((cartItem) => {
-        if (cartItem.id === payload.id) {
-          cartItem.quantity = cartItem.quantity + 1;
-        }
-      });
       return {
         ...state,
-        cartItems: updatedCartItems,
-        totalItems: state.totalItems + 1,
-        cartTotal: setCartTotal(updatedCartItems),
+        ...payload,
       };
     }
     case CART_ACTION_TYPES.DECREMENT_ITEM: {
       // DECREMENT ITEM
-      let updatedCartItems = state.cartItems.slice();
-      updatedCartItems.forEach((cartItem) => {
-        if (cartItem.id === payload.id) {
-          cartItem.quantity = cartItem.quantity - 1;
-        }
-      });
       return {
         ...state,
-        cartItems: updatedCartItems,
-        totalItems: state.totalItems + 1,
-        cartTotal: setCartTotal(updatedCartItems),
+        ...payload,
       };
     }
     case CART_ACTION_TYPES.REMOVE_ITEM: {
-      let updatedCartItems = state.cartItems.slice();
-      if (confirmDelete()) {
-        updatedCartItems.forEach((cartItem, idx) => {
-          if (cartItem.id === payload.id) {
-            updatedCartItems.splice(idx, 1);
-          }
-        });
-        return {
-          cartItems: updatedCartItems,
-          totalItems: updateTotalItems(updatedCartItems),
-          cartTotal: setCartTotal(updatedCartItems),
-        };
-      } else {
-        return {
-          ...state,
-        };
+      // REMOVE ITEM
+      return {
+        ...state,
+        ...payload
       }
     }
     default:
@@ -133,21 +93,97 @@ export const CartContext = createContext({
 
 export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [{ cartItems, totalItems, cartTotal }, dispatch] = useReducer(cartReducer, INITIAL_STATE);
+  const [{ cartItems, totalItems, cartTotal }, dispatch] = useReducer(
+    cartReducer,
+    INITIAL_STATE
+  );
 
   const addItemToCart = (productToAdd) => {
-    dispatch({ type: CART_ACTION_TYPES.ADD_ITEM, payload: productToAdd });
+    let existingItem = checkForExistingItem(cartItems, productToAdd);
+    let newState;
+    if (existingItem) {
+      let updatedCartItems = cartItems.map((cartItem) => {
+        if (cartItem.id === existingItem.id) {
+          cartItem.quantity = cartItem.quantity + 1;
+        }
+        return cartItem;
+      });
+      newState = {
+        cartItems: updatedCartItems,
+        totalItems: totalItems + 1,
+        cartTotal: setCartTotal(updatedCartItems),
+      };
+    } else {
+      productToAdd.quantity = 1;
+      newState = {
+        cartItems: [...cartItems, productToAdd],
+        totalItems: totalItems + 1,
+        cartTotal: setCartTotal([...cartItems, productToAdd]),
+      };
+    }
+
+    dispatch({ type: CART_ACTION_TYPES.ADD_ITEM, payload: newState });
   };
+
   const incrementItem = (productToIncrement) => {
-    dispatch({ type: CART_ACTION_TYPES.INCREMENT_ITEM, payload: productToIncrement
+    let updatedCartItems = cartItems.slice();
+    updatedCartItems.forEach((cartItem) => {
+      if (cartItem.id === productToIncrement.id) {
+        cartItem.quantity = cartItem.quantity + 1;
+      }
+    });
+    dispatch({
+      type: CART_ACTION_TYPES.INCREMENT_ITEM,
+      payload: {
+        cartItems: updatedCartItems,
+        totalItems: totalItems + 1,
+        cartTotal: setCartTotal(updatedCartItems),
+      },
     });
   };
   const decrementItem = (productToDecrement) => {
-    dispatch({
-      type: CART_ACTION_TYPES.DECREMENT_ITEM, payload: productToDecrement });
+    let updatedCartItems = cartItems.slice();
+    updatedCartItems.forEach((cartItem) => {
+      if (cartItem.id === productToDecrement.id) {
+        if (cartItem.quantity === 1) {
+          removeItem(productToDecrement);
+        } else {
+          cartItem.quantity = cartItem.quantity - 1;
+          dispatch({
+            type: CART_ACTION_TYPES.DECREMENT_ITEM,
+            payload: {
+              cartItems: updatedCartItems,
+              totalItems: totalItems + 1,
+              cartTotal: setCartTotal(updatedCartItems),
+            },
+          });
+        }
+      }
+    });
   };
-  const removeItem = (productToRemove) => {
-    dispatch({ type: CART_ACTION_TYPES.REMOVE_ITEM, payload: productToRemove });
+  const removeItem = (productToRemove) => {    
+    let updatedCartItems = cartItems.slice();
+    if (confirmDelete()) {
+      updatedCartItems.forEach((cartItem, idx) => {
+        if (cartItem.id === productToRemove.id) {
+          updatedCartItems.splice(idx, 1);
+        }
+      });
+      dispatch({ 
+        type: CART_ACTION_TYPES.REMOVE_ITEM,
+        payload: {
+          cartItems: updatedCartItems,
+          totalItems: updateTotalItems(updatedCartItems),
+          cartTotal: setCartTotal(updatedCartItems),
+        }
+      });
+    } else {
+      return {
+        cartItems,
+        totalItems,
+        cartTotal
+      };
+    }
   };
 
   const value = {
