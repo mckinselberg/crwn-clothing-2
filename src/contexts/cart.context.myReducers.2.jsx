@@ -1,7 +1,7 @@
-import { createContext, useReducer } from "react";
+import { createContext, useState, useReducer } from "react";
 
 const INITIAL_STATE = {
-  isCartOpen: false,
+  // isCartOpen: false,
   cartItems: [],
   totalItems: 0,
   cartTotal: 0,
@@ -12,19 +12,18 @@ const CART_ACTION_TYPES = {
   INCREMENT_ITEM: "INCREMENT_ITEM",
   DECREMENT_ITEM: "DECREMENT_ITEM",
   REMOVE_ITEM: "REMOVE_ITEM",
-  SET_IS_CART_OPEN: "SET_IS_CART_OPEN"
 };
 
 const cartReducer = (state, action) => {
   const { type, payload } = action;
 
+  // const payload = {
+  //   cartItems,
+  //   cartCount,
+  //   cartTotal
+  // }
+
   switch (type) {
-    case CART_ACTION_TYPES.SET_IS_CART_OPEN: {
-      return {
-        ...state,
-        ...payload,
-      };
-    }
     case CART_ACTION_TYPES.ADD_ITEM: {
       return {
         ...state,
@@ -81,7 +80,7 @@ const confirmDelete = () => {
 };
 
 export const CartContext = createContext({
-  isCartOpen: INITIAL_STATE.isCartOpen,
+  isCartOpen: false,
   setIsCartOpen: () => {},
   cartItems: INITIAL_STATE.cartItems,
   addItemToCart: () => {},
@@ -93,7 +92,8 @@ export const CartContext = createContext({
 });
 
 export const CartProvider = ({ children }) => {
-  const [{ isCartOpen, cartItems, totalItems, cartTotal }, dispatch] = useReducer(
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [{ cartItems, totalItems, cartTotal }, dispatch] = useReducer(
     cartReducer,
     INITIAL_STATE
   );
@@ -141,7 +141,6 @@ export const CartProvider = ({ children }) => {
       },
     });
   };
-
   const decrementItem = (productToDecrement) => {
     let updatedCartItems = cartItems.slice();
     updatedCartItems.forEach((cartItem) => {
@@ -162,7 +161,6 @@ export const CartProvider = ({ children }) => {
       }
     });
   };
-
   const removeItem = (productToRemove) => {    
     let updatedCartItems = cartItems.slice();
     if (confirmDelete()) {
@@ -187,10 +185,6 @@ export const CartProvider = ({ children }) => {
       };
     }
   };
-
-  const setIsCartOpen = () => {
-    dispatch({type: CART_ACTION_TYPES.SET_IS_CART_OPEN, payload: {isCartOpen: !isCartOpen}})
-  }
 
   const value = {
     isCartOpen,

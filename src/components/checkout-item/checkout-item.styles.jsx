@@ -13,14 +13,18 @@ export const Checkout = styled.div`
 export const Image = styled.div`
   width: 23%;
   padding-right: 15px;
+  border-radius: 2%;
+  overflow: hidden;
+  height: 200px;
   img {
-    width: 100%;
-    height: 100%;
+    width: 110%;
+    margin-top: -25px;
   }
 `;
 
 const nameQuantityPrice = css`
   width: 23%;
+  text-align: center;
 `;
 
 export const Name = styled.div`
@@ -30,6 +34,7 @@ export const Name = styled.div`
 export const Quantity = styled.div`
   ${nameQuantityPrice}
   display: flex;
+  justify-content: center;
   .arrow {
       cursor: pointer;
     }
@@ -45,6 +50,6 @@ export const Price = styled.div`
 
 export const RemoveButton = styled.div`
   ${nameQuantityPrice}
-  padding-left: 12px;
+  width: 8%;
   cursor: pointer;
 `;
