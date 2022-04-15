@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 
@@ -11,7 +11,7 @@ import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
 
 render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
         <CategoriesProvider>
@@ -20,8 +20,8 @@ render(
           </CartProvider>
         </CategoriesProvider>
       </UserProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+    </BrowserRouter>,
+  // </React.StrictMode>,
   document.getElementById("root")
 );
 

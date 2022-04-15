@@ -4,7 +4,7 @@ import { CartContext } from "../../contexts/cart.context";
 import { Checkout, Image, Name, Quantity, Price, RemoveButton } from "./checkout-item.styles";
 
 const CheckoutItem = ({ item }) => {
-  const { updateItem } = useContext(CartContext);
+  const { incrementItem, decrementItem, removeItem } = useContext(CartContext);
   const { id, name, imageUrl, quantity, price } = item;
   return (
     <Checkout key={id}>
@@ -15,16 +15,16 @@ const CheckoutItem = ({ item }) => {
       <Quantity>
         <span
           className="arrow"
-          onClick={() => updateItem(id, "decrement")}
+          onClick={() => decrementItem(item)}
         >&#10094;</span>{" "}
         <span className="value">{quantity} </span>
         <span
           className="arrow"
-          onClick={() => updateItem(id, "increment")}
+          onClick={() => incrementItem(item)}
         >&#10095;</span>
       </Quantity>
       <Price>${price}</Price>
-      <RemoveButton onClick={() => updateItem(id, "delete")}>
+      <RemoveButton onClick={() => removeItem(item)}>
         &#10005;
       </RemoveButton>
     </Checkout>
