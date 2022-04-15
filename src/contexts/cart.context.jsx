@@ -1,5 +1,7 @@
 import { createContext, useReducer } from "react";
 
+import { createAction } from "../utils/reducer/reducer.utils";
+
 const INITIAL_STATE = {
   isCartOpen: false,
   cartItems: [],
@@ -8,11 +10,8 @@ const INITIAL_STATE = {
 };
 
 const CART_ACTION_TYPES = {
-  ADD_ITEM: "ADD_ITEM",
-  INCREMENT_ITEM: "INCREMENT_ITEM",
-  DECREMENT_ITEM: "DECREMENT_ITEM",
-  REMOVE_ITEM: "REMOVE_ITEM",
-  SET_IS_CART_OPEN: "SET_IS_CART_OPEN"
+  SET_IS_CART_OPEN: "SET_IS_CART_OPEN",
+  SET_CART_ITEMS: "SET_CART_ITEMS",
 };
 
 const cartReducer = (state, action) => {
@@ -25,32 +24,11 @@ const cartReducer = (state, action) => {
         ...payload,
       };
     }
-    case CART_ACTION_TYPES.ADD_ITEM: {
+    case CART_ACTION_TYPES.SET_CART_ITEMS: {
       return {
         ...state,
         ...payload,
       };
-    }
-    case CART_ACTION_TYPES.INCREMENT_ITEM: {
-      // INCREMENT ITEM
-      return {
-        ...state,
-        ...payload,
-      };
-    }
-    case CART_ACTION_TYPES.DECREMENT_ITEM: {
-      // DECREMENT ITEM
-      return {
-        ...state,
-        ...payload,
-      };
-    }
-    case CART_ACTION_TYPES.REMOVE_ITEM: {
-      // REMOVE ITEM
-      return {
-        ...state,
-        ...payload
-      }
     }
     default:
       throw new Error(`unhandled type ${type} in cartReducer`);
@@ -93,10 +71,8 @@ export const CartContext = createContext({
 });
 
 export const CartProvider = ({ children }) => {
-  const [{ isCartOpen, cartItems, totalItems, cartTotal }, dispatch] = useReducer(
-    cartReducer,
-    INITIAL_STATE
-  );
+  const [{ isCartOpen, cartItems, totalItems, cartTotal }, dispatch] =
+    useReducer(cartReducer, INITIAL_STATE);
 
   const addItemToCart = (productToAdd) => {
     let existingItem = checkForExistingItem(cartItems, productToAdd);
@@ -122,7 +98,7 @@ export const CartProvider = ({ children }) => {
       };
     }
 
-    dispatch({ type: CART_ACTION_TYPES.ADD_ITEM, payload: newState });
+    dispatch(createAction(CART_ACTION_TYPES.SET_CART_ITEMS, newState));
   };
 
   const incrementItem = (productToIncrement) => {
@@ -132,14 +108,13 @@ export const CartProvider = ({ children }) => {
         cartItem.quantity = cartItem.quantity + 1;
       }
     });
-    dispatch({
-      type: CART_ACTION_TYPES.INCREMENT_ITEM,
-      payload: {
+    dispatch(
+      createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
         cartItems: updatedCartItems,
         totalItems: totalItems + 1,
         cartTotal: setCartTotal(updatedCartItems),
-      },
-    });
+      })
+    );
   };
 
   const decrementItem = (productToDecrement) => {
@@ -150,20 +125,19 @@ export const CartProvider = ({ children }) => {
           removeItem(productToDecrement);
         } else {
           cartItem.quantity = cartItem.quantity - 1;
-          dispatch({
-            type: CART_ACTION_TYPES.DECREMENT_ITEM,
-            payload: {
+          dispatch(
+            createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
               cartItems: updatedCartItems,
               totalItems: totalItems + 1,
               cartTotal: setCartTotal(updatedCartItems),
-            },
-          });
+            })
+          );
         }
       }
     });
   };
 
-  const removeItem = (productToRemove) => {    
+  const removeItem = (productToRemove) => {
     let updatedCartItems = cartItems.slice();
     if (confirmDelete()) {
       updatedCartItems.forEach((cartItem, idx) => {
@@ -171,26 +145,29 @@ export const CartProvider = ({ children }) => {
           updatedCartItems.splice(idx, 1);
         }
       });
-      dispatch({ 
-        type: CART_ACTION_TYPES.REMOVE_ITEM,
-        payload: {
+      dispatch(
+        createAction(CART_ACTION_TYPES.SET_CART_ITEMS, {
           cartItems: updatedCartItems,
           totalItems: updateTotalItems(updatedCartItems),
           cartTotal: setCartTotal(updatedCartItems),
-        }
-      });
+        })
+      );
     } else {
       return {
         cartItems,
         totalItems,
-        cartTotal
+        cartTotal,
       };
     }
   };
 
   const setIsCartOpen = () => {
-    dispatch({type: CART_ACTION_TYPES.SET_IS_CART_OPEN, payload: {isCartOpen: !isCartOpen}})
-  }
+    dispatch(
+      createAction(CART_ACTION_TYPES.SET_IS_CART_OPEN, {
+        isCartOpen: !isCartOpen,
+      })
+    );
+  };
 
   const value = {
     isCartOpen,
