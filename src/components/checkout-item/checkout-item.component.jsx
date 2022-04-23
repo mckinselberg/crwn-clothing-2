@@ -1,10 +1,29 @@
-import { useContext } from "react";
-import { CartContext } from "../../contexts/cart.context";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectCartItems,
+  selectTotalItems,
+} from "../../store/cart/cart.selector";
 
-import { Checkout, Image, Name, Quantity, Price, RemoveButton } from "./checkout-item.styles";
+import { CART_ACTION_TYPES } from "../../store/cart/cart.types";
+import {
+  decrementItem,
+  incrementItem,
+  removeItem,
+} from "../../store/cart/cart.reducer.functions";
+import {
+  Checkout,
+  Image,
+  Name,
+  Quantity,
+  Price,
+  RemoveButton,
+} from "./checkout-item.styles";
 
 const CheckoutItem = ({ item }) => {
-  const { incrementItem, decrementItem, removeItem } = useContext(CartContext);
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const totalItems = useSelector(selectTotalItems);
+
   const { id, name, imageUrl, quantity, price } = item;
   return (
     <Checkout key={id}>
@@ -15,16 +34,37 @@ const CheckoutItem = ({ item }) => {
       <Quantity>
         <span
           className="arrow"
-          onClick={() => decrementItem(item)}
-        >&#10094;</span>{" "}
+          onClick={() =>
+            dispatch({
+              type: CART_ACTION_TYPES.SET_CART_ITEMS,
+              payload: decrementItem(cartItems, item, totalItems),
+            })
+          }
+        >
+          &#10094;
+        </span>
         <span className="value">{quantity} </span>
         <span
           className="arrow"
-          onClick={() => incrementItem(item)}
-        >&#10095;</span>
+          onClick={() =>
+            dispatch({
+              type: CART_ACTION_TYPES.SET_CART_ITEMS,
+              payload: incrementItem(cartItems, item, totalItems),
+            })
+          }
+        >
+          &#10095;
+        </span>
       </Quantity>
       <Price>${price}</Price>
-      <RemoveButton onClick={() => removeItem(item)}>
+      <RemoveButton
+        onClick={() =>
+          dispatch({
+            type: CART_ACTION_TYPES.SET_CART_ITEMS,
+            payload: removeItem(cartItems, item, totalItems),
+          })
+        }
+      >
         &#10005;
       </RemoveButton>
     </Checkout>
