@@ -1,15 +1,15 @@
 import { useSelector, useDispatch } from "react-redux";
+import { CART_ACTION_TYPES } from "../../store/cart/cart.types";
 import {
   selectCartItems,
   selectTotalItems,
 } from "../../store/cart/cart.selector";
-
-import { CART_ACTION_TYPES } from "../../store/cart/cart.types";
 import {
-  decrementItem,
   incrementItem,
+  decrementItem,
   removeItem,
-} from "../../store/cart/cart.reducer.functions";
+} from "../../store/cart/cart.selector.functions";
+
 import {
   Checkout,
   Image,
@@ -24,6 +24,21 @@ const CheckoutItem = ({ item }) => {
   const cartItems = useSelector(selectCartItems);
   const totalItems = useSelector(selectTotalItems);
 
+  const incrementItemHandler = () => dispatch({
+    type: CART_ACTION_TYPES.SET_CART_ITEMS,
+    payload: incrementItem(cartItems, item, totalItems),
+  });
+
+  const decrementItemHandler = () => dispatch({
+    type: CART_ACTION_TYPES.SET_CART_ITEMS,
+    payload: decrementItem(cartItems, item, totalItems),
+  })
+
+  const removeItemHandler = () => dispatch({
+    type: CART_ACTION_TYPES.SET_CART_ITEMS,
+    payload: removeItem(cartItems, item, totalItems),
+  });
+
   const { id, name, imageUrl, quantity, price } = item;
   return (
     <Checkout key={id}>
@@ -34,36 +49,21 @@ const CheckoutItem = ({ item }) => {
       <Quantity>
         <span
           className="arrow"
-          onClick={() =>
-            dispatch({
-              type: CART_ACTION_TYPES.SET_CART_ITEMS,
-              payload: decrementItem(cartItems, item, totalItems),
-            })
-          }
+          onClick={decrementItemHandler}
         >
           &#10094;
         </span>
         <span className="value">{quantity} </span>
         <span
           className="arrow"
-          onClick={() =>
-            dispatch({
-              type: CART_ACTION_TYPES.SET_CART_ITEMS,
-              payload: incrementItem(cartItems, item, totalItems),
-            })
-          }
+          onClick={incrementItemHandler}
         >
           &#10095;
         </span>
       </Quantity>
       <Price>${price}</Price>
       <RemoveButton
-        onClick={() =>
-          dispatch({
-            type: CART_ACTION_TYPES.SET_CART_ITEMS,
-            payload: removeItem(cartItems, item, totalItems),
-          })
-        }
+        onClick={removeItemHandler}
       >
         &#10005;
       </RemoveButton>
