@@ -45,7 +45,11 @@ const CheckoutItem = ({ item }) => {
       <Image>
         <img src={imageUrl} alt={name} />
       </Image>
-      <Name>{name}</Name>
+      <Name>
+        <span>
+          {name}
+        </span>
+      </Name>
       <Quantity>
         <span
           className="arrow"

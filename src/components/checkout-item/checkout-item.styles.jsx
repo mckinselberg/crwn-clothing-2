@@ -16,6 +16,8 @@ export const Image = styled.div`
   border-radius: 2%;
   overflow: hidden;
   height: 200px;
+  display:flex;
+  align-items: center;
   img {
     width: 110%;
     margin-top: -25px;
@@ -29,6 +31,12 @@ const nameQuantityPrice = css`
 
 export const Name = styled.div`
   ${nameQuantityPrice}
+  display: flex;
+  align-items: center;
+  text-align: center;
+  span {
+    width: 100%;
+  }
 `;
 
 export const Quantity = styled.div`
